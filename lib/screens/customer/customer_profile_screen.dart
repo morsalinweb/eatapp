@@ -6,6 +6,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/alien_avatar.dart';
 import '../auth/role_select_screen.dart';
 import '../shared/change_password_screen.dart';
+import '../shared/delete_account_screen.dart';
 import '../shared/help_center_screen.dart';
 import '../shared/privacy_policy_screen.dart';
 import 'customer_edit_profile_screen.dart';
@@ -93,6 +94,15 @@ class CustomerProfileScreen extends StatelessWidget {
                 (route) => false,
               );
             },
+          ),
+          const SizedBox(height: 4),
+          _tile(
+            context,
+            Icons.delete_forever_outlined,
+            'Delete Account',
+            isDanger: true,
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const DeleteAccountScreen())),
           ),
         ],
       ),

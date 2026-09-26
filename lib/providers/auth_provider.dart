@@ -12,15 +12,6 @@ import '../screens/vendor/vendor_shell.dart';
 import '../screens/vendor/application/application_pending_screen.dart';
 import '../screens/vendor/application/vendor_application_screen.dart';
 
-/// Auth state now backed by real Supabase Auth. Session persistence is
-/// handled automatically by supabase_flutter (it survives app restarts),
-/// so [tryRestoreSession] just needs to check whether one already exists
-/// and re-fetch the profile.
-///
-/// This provider also listens for sign-ins that happen *outside* an
-/// explicit login()/signup() call — specifically, tapping the
-/// "confirm your email" link, which supabase_flutter picks up
-/// automatically and turns into a normal sign-in event.
 class AuthProvider extends ChangeNotifier {
   final _client = Supabase.instance.client;
 
@@ -169,9 +160,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// PATCH /auth/me — used by the "Edit Profile" screen. `avatarUrl` is
-  /// optional so this same method covers both "save name/phone" and
-  /// "just changed my photo" without needing a separate endpoint.
   Future<bool> updateProfile({required String fullName, String? phone, String? avatarUrl}) async {
     try {
       final json = await ApiClient.instance.patch('/auth/me', body: {
@@ -195,6 +183,26 @@ class AuthProvider extends ChangeNotifier {
     _currentUser = null;
     _vendorApplicationStatus = null;
     notifyListeners();
+  }
+
+  /// DELETE /auth/me — permanently deletes the account and everything tied
+  /// to it server-side (see auth.controller.js's deleteMe). Afterward, the
+  /// local Supabase session is cleared too, since the account it belonged
+  /// to no longer exists to validate any future request against.
+  Future<bool> deleteAccount() async {
+    try {
+      await ApiClient.instance.delete('/auth/me');
+      SocketService.instance.disconnect();
+      await _client.auth.signOut();
+      _currentUser = null;
+      _vendorApplicationStatus = null;
+      notifyListeners();
+      return true;
+    } on ApiException catch (e) {
+      _error = e.message;
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<void> _autoRouteAfterDeepLinkSignIn() async {

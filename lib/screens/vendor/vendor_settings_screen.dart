@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/role_select_screen.dart';
 import '../shared/change_password_screen.dart';
+import '../shared/delete_account_screen.dart';
 import '../shared/help_center_screen.dart';
 import '../shared/privacy_policy_screen.dart';
 import 'location_sharing_preferences_screen.dart';
@@ -78,6 +79,15 @@ class VendorSettingsScreen extends StatelessWidget {
             onTap: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => const VendorGuidelinesScreen())),
           ),
+          const SizedBox(height: 20),
+          _section('DANGER ZONE'),
+          _tile(
+            Icons.delete_forever_outlined,
+            'Delete Account',
+            isDanger: true,
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const DeleteAccountScreen())),
+          ),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
@@ -110,11 +120,14 @@ class VendorSettingsScreen extends StatelessWidget {
                 letterSpacing: 1)),
       );
 
-  Widget _tile(IconData icon, String title, {VoidCallback? onTap}) => Card(
+  Widget _tile(IconData icon, String title, {bool isDanger = false, VoidCallback? onTap}) => Card(
         margin: const EdgeInsets.only(bottom: 10),
         child: ListTile(
-          leading: Icon(icon, color: AppColors.neon),
-          title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+          leading: Icon(icon, color: isDanger ? AppColors.danger : AppColors.neon),
+          title: Text(title,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: isDanger ? AppColors.danger : AppColors.textPrimary)),
           trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
           onTap: onTap ?? () {},
         ),

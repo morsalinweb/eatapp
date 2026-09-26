@@ -5,8 +5,8 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/role_select_screen.dart';
 import '../shared/change_password_screen.dart';
+import '../shared/delete_account_screen.dart';
 import '../shared/privacy_policy_screen.dart';
-import 'admin_locations_screen.dart';
 import 'admin_manage_users_screen.dart';
 import 'admin_manage_vendors_screen.dart';
 import 'admin_suspended_accounts_screen.dart';
@@ -21,16 +21,6 @@ class AdminSettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.map_outlined, color: AppColors.neon),
-              title: const Text('Live Locations'),
-              subtitle: const Text('Current vendor & customer positions'),
-              trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-              onTap: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => const AdminLocationsScreen())),
-            ),
-          ),
           Card(
             child: ListTile(
               leading: const Icon(Icons.people_outline, color: AppColors.neon),
@@ -74,6 +64,16 @@ class AdminSettingsScreen extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
               onTap: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen())),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.delete_forever_outlined, color: AppColors.danger),
+              title: const Text('Delete Account', style: TextStyle(color: AppColors.danger)),
+              trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const DeleteAccountScreen())),
             ),
           ),
           const SizedBox(height: 20),
